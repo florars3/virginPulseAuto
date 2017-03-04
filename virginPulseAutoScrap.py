@@ -17,8 +17,8 @@ driver = webdriver.Chrome("C:\Users\eripflo\AppData\Local\Temp\Rar$EXa0.403\chro
 '''
 driver.get("https://member.virginpulse.com/login.aspx")
  
-driver.find_element_by_id('oUserID').send_keys('username'+Keys.TAB) 
-driver.find_element_by_id('oPwdID').send_keys('password') 
+driver.find_element_by_id('oUserID').send_keys('user'+Keys.TAB) 
+driver.find_element_by_id('oPwdID').send_keys('pass')
 time.sleep(1) 
 driver.find_element_by_id('oLogon').click()
 
@@ -31,7 +31,7 @@ try:
 except NoSuchElementException: 
     print("No such thing")
 
-time.sleep(4)
+time.sleep(5)
 
 '''
  Here we are trying to click both the daily cards
@@ -39,15 +39,21 @@ time.sleep(4)
 try:
 	driver.find_element_by_id('triggerCloseCurtain').click()
 	time.sleep(2)
+	for i in range(1,3):
+		driver.find_element_by_xpath("//*[@id=\"daily-tips-slider\"]/div[%d]/daily-cards/div/div[3]/div[6]/img[1]" % i)
+	driver.find_element_by_id('triggerCloseCurtain').click()
 except NoSuchElementException:
 	print("No cards to check")
+
 
 time.sleep(2)
 
 '''
 We are going to click below to view the Healthy Daily Habits
 '''
+
 driver.find_element_by_xpath('//*[@id="page-wrapper"]/div/div/div/basic-home/div/div/div[1]/tour/div[7]/div[1]').click()
+
 time.sleep(4)
 
 '''
@@ -60,7 +66,7 @@ count = 1
 for elem in sameNames:
 	print("elem is:",elem.get_attribute("class"))
 	ActionChains(driver).move_to_element(elem).perform()
-	time.sleep(10)
+	time.sleep(2)
 	print("it reached after sleep")
 	try:
 		print("Value of count:",count)
