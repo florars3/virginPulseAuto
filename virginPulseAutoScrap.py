@@ -3,6 +3,10 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException 
 import time
 from selenium.webdriver import ActionChains
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 #Install pip: http://stackoverflow.com/questions/4750806/how-do-i-install-pip-on-windows 
 #Install selenium via http://selenium-python.readthedocs.io/installation.html (pip install selenium) 
@@ -22,13 +26,33 @@ driver.find_element_by_id('oPwdID').send_keys('pass')
 time.sleep(1) 
 driver.find_element_by_id('oLogon').click()
 
+
+
+'''
+Try to look for the id
+'''
+timeout = 5
+try:
+    element_present = EC.presence_of_element_located((By.ID, 'close-trophy-popup-wrapper'))
+    WebDriverWait(driver, timeout).until(element_present)
+except TimeoutException:
+    print "Timed out waiting for page to load"
+
+
+
 '''
  After login success, there is usually highlights such as trophy for steps, challenges, etc. Action
  performed here is closing that
 '''
 
-try: 
-    driver.find_element_by_class_name('close-trophy-popup-wrapper').click() 
+try:
+	time.sleep(10)
+	elem = driver.find_element_by_class_name('close-trophy-popup-wrapper')
+	if elem.is_displayed():
+		elem.click()
+		print("Zoom in 4x. Successful")
+	else:
+		print("Element is not visible")=
 except NoSuchElementException: 
     print("No such thing")
 
@@ -84,6 +108,6 @@ for elem in sameNames:
 		print("nvm")
 	count = count+1
 
-
+driver.close()
 
 
