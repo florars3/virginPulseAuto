@@ -26,24 +26,32 @@ driver.find_element_by_id('oLogon').click()
  After login success, there is usually highlights such as trophy for steps, challenges, etc. Action
  performed here is closing that
 '''
+
 try: 
     driver.find_element_by_class_name('close-trophy-popup-wrapper').click() 
 except NoSuchElementException: 
     print("No such thing")
 
-time.sleep(5)
+time.sleep(10)
+
 
 '''
- Here we are trying to click both the daily cards
+Here we are trying to click both the daily cards
 '''
 try:
-	driver.find_element_by_id('triggerCloseCurtain').click()
-	time.sleep(2)
 	for i in range(1,3):
-		driver.find_element_by_xpath("//*[@id=\"daily-tips-slider\"]/div[%d]/daily-cards/div/div[3]/div[6]/img[1]" % i)
-	driver.find_element_by_id('triggerCloseCurtain').click()
+		time.sleep(10)
+
+		hitButton = driver.find_element_by_id('triggerCloseCurtain')
+		ActionChains(driver).click(hitButton).perform()
+		time.sleep(10)
+		nextButton = driver.find_element_by_xpath("//*[@id=\"page-wrapper\"]/div/div/div/basic-home/div/div/daily-tips/div/div[4]")
+		ActionChains(driver).click(nextButton).perform()
+		print("Next pressed")
 except NoSuchElementException:
 	print("No cards to check")
+
+
 
 
 time.sleep(2)
