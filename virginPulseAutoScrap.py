@@ -22,7 +22,7 @@ driver = webdriver.Chrome("C:\Users\eripflo\AppData\Local\Temp\Rar$EXa0.403\chro
 driver.get("https://member.virginpulse.com/login.aspx")
  
 driver.find_element_by_id('oUserID').send_keys('user'+Keys.TAB) 
-driver.find_element_by_id('oPwdID').send_keys('pass')
+driver.find_element_by_id('oPwdID').send_keys('password')
 time.sleep(1) 
 driver.find_element_by_id('oLogon').click()
 
@@ -31,6 +31,7 @@ driver.find_element_by_id('oLogon').click()
 '''
 Try to look for the id
 '''
+
 timeout = 5
 try:
     element_present = EC.presence_of_element_located((By.ID, 'close-trophy-popup-wrapper'))
@@ -42,43 +43,66 @@ except TimeoutException:
 
 '''
  After login success, there is usually highlights such as trophy for steps, challenges, etc. Action
- performed here is closing that
 '''
 
 try:
-	time.sleep(10)
 	elem = driver.find_element_by_class_name('close-trophy-popup-wrapper')
 	if elem.is_displayed():
 		elem.click()
 		print("Zoom in 4x. Successful")
 	else:
-		print("Element is not visible")=
+		print("Element is not visible")
 except NoSuchElementException: 
     print("No such thing")
 
-time.sleep(10)
+time.sleep(5)
 
+
+'''
+Try to select daily cards, just in case if both the cards were clicked [Testing Purpose].
+
+'''
+try:
+	element_present = EC.presence_of_element_located((By.XPATH, '//*[@id="page-wrapper"]/div/div/div/basic-home/div/div/home-stats/div/div[1]/div/div[1]/span[2]'))
+	WebDriverWait(driver, timeout).until(element_present)
+	print("element present")
+	time.sleep(5)
+	print("Try to click the other button when the display is not there")
+	el = driver.find_element_by_xpath("//*[@id=\"page-wrapper\"]/div/div/div/basic-home/div/div/div[1]/tour/div[6]")
+	ActionChains(driver).click(el).perform()
+	print("it should have clicked")
+except TimeoutException:
+	print "No steps page available"
 
 '''
 Here we are trying to click both the daily cards
 '''
-try:
-	for i in range(1,3):
-		time.sleep(10)
+time.sleep(5)
 
-		hitButton = driver.find_element_by_id('triggerCloseCurtain')
-		ActionChains(driver).click(hitButton).perform()
-		time.sleep(10)
+categoryIds = driver.find_elements_by_xpath("//*[@id=\"triggerCloseCurtain\"]")
+print("categoryids:", categoryIds)
+cnt = 2
+try:
+	for id in categoryIds:
+		numId = id.get_attribute('category')
+		print("numid: ", int(str(numId)))
+		hitId = driver.find_element_by_xpath("//*[@category=" + numId +"]")
+		ActionChains(driver).click(hitId).perform()
+		#try to click like button for testing
+		hitLike = driver.find_element_by_xpath("//*[@id=\"daily-tips-slider\"]/div[1]/daily-cards/div/div[3]/div[6]/img["+ str(cnt)+"]")
+		ActionChains(driver).click(hitLike).perform()
+		print("Should have clicked a button")
 		nextButton = driver.find_element_by_xpath("//*[@id=\"page-wrapper\"]/div/div/div/basic-home/div/div/daily-tips/div/div[4]")
 		ActionChains(driver).click(nextButton).perform()
-		print("Next pressed")
+		print("should have clicked next button")
+		cnt = cnt -1 
+		time.sleep(10)
 except NoSuchElementException:
 	print("No cards to check")
 
 
-
-
 time.sleep(2)
+
 
 '''
 We are going to click below to view the Healthy Daily Habits
@@ -99,10 +123,9 @@ for elem in sameNames:
 	print("elem is:",elem.get_attribute("class"))
 	ActionChains(driver).move_to_element(elem).perform()
 	time.sleep(2)
-	print("it reached after sleep")
 	try:
 		print("Value of count:",count)
-		hiddenYes = driver.find_element_by_xpath('//*[@id="page-wrapper"]/div/div/div/basic-home/div/div/div[2]/home-healthy-habits/div/div/div[%d]/home-healthy-habit-tile/div/div[2]/button[1]' % count)
+		hiddenYes = driver.find_element_by_xpath('//*[@id="page-wrapper"]/div/div/div/basic-home/div/div/div[2]/home-healthy-habits/div/div/div[%d]/home-healthy-habit-tile/div/div[3]/button[1]' % count)
 		ActionChains(driver).click(hiddenYes).perform()
 	except NoSuchElementException:
 		print("nvm")
